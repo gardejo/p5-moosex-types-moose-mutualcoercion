@@ -108,9 +108,6 @@ coerce ArrayRefToLines,
     from ArrayRef[Str],
         via {
             ( join $/, @$_ ) . $/;
-            # my $x = ( join $/, @$_ ) . $/;
-            # warn '***', $x;
-            # return $x;
         };
 
 # ================================================================
