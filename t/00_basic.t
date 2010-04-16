@@ -138,7 +138,7 @@ BEGIN {
         'coercion of ArrayRefToHashRef'
     );
     is_deeply(
-        $foo->arrayreftohashkeys([qw(m 12 n 13 o 14)]),
+        $foo->arrayreftohashkeys([qw(m n o)]),
         { m => undef, n => undef, o => undef, },
         'coercion of ArrayRefToHashKeys'
     );
