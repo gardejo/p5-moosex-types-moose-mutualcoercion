@@ -408,7 +408,7 @@ B<CAVEAT>: This module does not provide C<< StrToRoleName >> currentry.
 
 =item C<< StrToScalarRef >>
 
-A subtype of C<< ScalarRef >>.
+A subtype of C<< ScalarRef[Str] >>.
 If you turned C<< coerce >> on, C<< Str >> will be referenced.
 For example, C<< foo >> will be converted into C<< \do{'foo'} >>.
 

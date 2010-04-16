@@ -110,7 +110,7 @@ B<警告>: このモジュールは現時点ではC<< StrToRoleName >>を提供�
 
 =item C<< StrToScalarRef >>
 
-C<< ScalarRef >>のサブタイプです。
+C<< ScalarRef[Str] >>のサブタイプです。
 C<< coerce >>を有効にした場合、C<< Str >>はリファレンスになります。
 例えば、C<< foo >>はC<< \do{'foo'} >>に変換されます。
 
