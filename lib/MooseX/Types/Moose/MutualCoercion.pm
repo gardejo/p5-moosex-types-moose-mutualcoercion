@@ -251,7 +251,7 @@ coerce ArrayRefToHashRef,
         };
 
 coerce ArrayRefToHashKeys,
-    from EvenArrayRef,
+    from ArrayRef,
         via {
             my %hash;
             @hash{@$_} = ();
