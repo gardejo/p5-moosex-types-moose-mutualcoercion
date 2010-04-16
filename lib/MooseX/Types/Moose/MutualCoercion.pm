@@ -253,8 +253,8 @@ coerce ArrayRefToHashRef,
 coerce ArrayRefToHashKeys,
     from EvenArrayRef,
         via {
-            my %hash = @$_;
-            @hash{keys %hash} = ();
+            my %hash;
+            @hash{@$_} = ();
             \%hash;
         };
 
