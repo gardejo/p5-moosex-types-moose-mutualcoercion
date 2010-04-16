@@ -43,7 +43,7 @@ use lib "$FindBin::Bin/../lib";
     package App::BloodDonation::Examination;
 
     use Moose 0.89_01;
-    use MooseX::Types::Moose::MutualCoercion qw(ArrayRefToHashRef);
+    use MooseX::Types::Moose::MutualCoercion qw(ArrayRefToHashKeys);
 
     use namespace::clean -except => [qw(meta)];
 
@@ -61,7 +61,7 @@ use lib "$FindBin::Bin/../lib";
             Hash
         )],
         is              => 'rw',
-        isa             => ArrayRefToHashRef,
+        isa             => ArrayRefToHashKeys,
         coerce          => 1,
         required        => 1,
         trigger         => sub {
