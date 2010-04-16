@@ -81,8 +81,7 @@ build_requires(
 test_requires(
 #   'Test::Class'                       => '0.34',
         # was not used this time
-#   'Test::Exception'                   => '0.27',
-        # was not used this time
+    'Test::Exception'                   => '0.27',
         # cf. MooseX-Types-DateTime
     'Test::More'                        => '0',
     'Test::Requires'                    => '0',
