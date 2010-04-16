@@ -293,32 +293,50 @@ __END__
 
 MooseX::Types::Moose::MutualCoercion - Mutual coercions for common type constraints of Moose
 
+=head1 VERSION
+
+This document describes
+L<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>
+version C<0.00>.
+
+=head2 Translations
+
+=over 4
+
+=item en: English
+
+L<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>
+(This document)
+
+=item ja: Japanese
+
+L<MooseX::Types::Moose::MutualCoercion::JA|MooseX::Types::Moose::MutualCoercion::JA>
+
+=back
+
 =head1 SYNOPSIS
 
     {
         package Foo;
         use Moose;
         use MooseX::Types::Moose::MutualCoercion qw(
-            StrToArrayRef ArrayRefToHashRef
+            StrToArrayRef ArrayRefToHashKeys
         );
         has 'tags'
             => ( is => 'rw', isa => StrToArrayRef, coerce => 1 );
         has 'lookup_table'
-            => ( is => 'rw', isa => ArrayRefToHashRef, coerce => 1 );
+            => ( is => 'rw', isa => ArrayRefToHashKeys, coerce => 1 );
         1;
     }
-    {
-        package main;
-        my $foo = Foo->new(
-            tags         => 'bar',
-            lookup_table => [qw(baz qux)],
-        );
-        print $foo->tags->[0];      # 'bar'
-        print 'eureka!'             # 'eureka!'
-            if grep {
-                exists $foo->lookup_table->{$_};
-            } qw(foo bar baz);
-    }
+
+    my $foo = Foo->new( tags => 'bar' );
+    print $foo->tags->[0];                      # 'bar'
+
+    $foo->lookup_table([qw(baz qux)]);
+    print 'eureka!'                             # 'eureka!'
+        if grep {
+            exists $foo->lookup_table->{$_};
+        } qw(foo bar baz);
 
 =head1 DESCRIPTION
 
@@ -329,148 +347,169 @@ known to L<Moose|Moose>.
 
 =head1 CONSTRAINTS AND COERCIONS
 
-=head2 To C<Int>
+B<NOTE>: These constraints are not exported by default
+but you can request them in an import list like this:
+
+    use MooseX::Types::Moose::MutualCoercion qw(NumToInt ScalarRefToStr);
+
+=head2 To C<< Int >>
 
 =over 4
 
-=item C<NumToInt>
+=item C<< NumToInt >>
 
-A subtype of C<Int>.
-If you turned C<coerce> on, C<Num> will be integer.
-For example, C<3.14> will be converted into C<3>.
+A subtype of C<< Int >>.
+If you turned C<< coerce >> on, C<< Num >> will be integer.
+For example, C<< 3.14 >> will be converted into C<< 3 >>.
 
 =back
 
-=head2 To C<Str>
+=head2 To C<< Str >>
 
 =over 4
 
-=item C<ScalarRefToStr>
+=item C<< ScalarRefToStr >>
 
-A subtype of C<Str>.
-If you turned C<coerce> on, C<ScalarRef[Str]> will be dereferenced string.
-For example, C<\do{'foo'}> will be converted into C<foo>.
+A subtype of C<< Str >>.
+If you turned C<< coerce >> on,
+C<< ScalarRef[Str] >> will be dereferenced string.
+For example, C<< \do{'foo'} >> will be converted into C<< foo >>.
 
-=item C<ArrayRefToLines>
+=item C<< ArrayRefToLines >>
 
-A subtype of C<Str>.
-If you turned C<coerce> on,
-all elements of C<ArrayRef[Str]> will be joined by C<$/>.
-For example, C<[qw(foo bar baz)]> will be converted into C<foo\nbar\nbaz\n>.
+A subtype of C<< Str >>.
+If you turned C<< coerce >> on,
+all elements of C<< ArrayRef[Str] >> will be joined by C<< $/ >>.
+For example, C<< [qw(foo bar baz)] >>
+will be converted into C<< foo\nbar\nbaz\n >>.
+
+B<NOTE>: Also adds C<< $/ >> to the last element.
 
 =back
 
-=head2 To C<ClasName>
+=head2 To C<< ClassName >>
 
 =over 4
 
-=item C<StrToClassName>
+=item C<< StrToClassName >>
 
-A subtype of C<ClassName>.
-If you turned C<coerce> on, C<NonEmptySimpleStr>, provided by
+A subtype of C<< ClassName >>.
+If you turned C<< coerce >> on, C<< NonEmptySimpleStr >>, provided by
 L<MooseX::Types::Common::String|MooseX::Types::Common::String>,
-will be ensure loaded by L<Class::MOP::load_class()|Class::MOP>.
+will be ensure loaded by L<< Class::MOP::load_class()|Class::MOP >>.
 
-B<CAVEAT>: This module does not provide C<StrToRoleName> currentry.
-
-=back
-
-=head2 To C<ScalarRef>
-
-=over 4
-
-=item C<StrToScalarRef>
-
-A subtype of C<ScalarRef>.
-If you turned C<coerce> on, C<Str> will be referenced.
-For example, C<foo> will be converted into C<\do{'foo'}>.
+B<CAVEAT>: This module does not provide C<< StrToRoleName >> currentry.
 
 =back
 
-=head2 To C<ArrayRef>
+=head2 To C<< ScalarRef >>
 
 =over 4
 
-=item C<StrToArrayRef>
+=item C<< StrToScalarRef >>
 
-A subtype of C<ArrayRef>.
-If you turned C<coerce> on, C<Str> will be assined for the first element
-of an array reference.
-For example, C<foo> will be converted into C<[qw(foo)]>.
+A subtype of C<< ScalarRef >>.
+If you turned C<< coerce >> on, C<< Str >> will be referenced.
+For example, C<< foo >> will be converted into C<< \do{'foo'} >>.
 
-=item C<LinesToArrayRef>
+=back
 
-A subtype of C<ArrayRef>.
-If you turned C<coerce> on, C<Str> will be split by C<$/>
+=head2 To C<< ArrayRef >>
+
+=over 4
+
+=item C<< StrToArrayRef >>
+
+A subtype of C<< ArrayRef >>.
+If you turned C<< coerce >> on,
+C<< Str >> will be assined for the first element of an array reference.
+For example, C<< foo >> will be converted into C<< [qw(foo)] >>.
+
+=item C<< LinesToArrayRef >>
+
+A subtype of C<< ArrayRef >>.
+If you turned C<< coerce >> on, C<< Str >> will be split by C<< $/ >>
 and will be assigned for each element of an array reference.
-For example, C<foo\nbar\nbaz> will be converted into C<[qw(foo bar baz)]>.
+For example, C<< foo\nbar\nbaz\n >>
+will be converted into C<< ["foo\n", "bar\n", "baz\n"] >>.
 
-=item C<HashRefToArrayRef>
+B<NOTE>: C<< $/ >> was not removed.
 
-A subtype of C<ArrayRef>.
-If you turned C<coerce> on, C<HashRef> will be a flatten array reference.
-For example, C<{foo => 0, bar => 1}>
-will be converted into C<[qw(foo 0 bar 1)]>.
+=item C<< HashRefToArrayRef >>
 
-=item C<HashKeysToArrayRef>
+A subtype of C<< ArrayRef >>.
+If you turned C<< coerce >> on,
+C<< HashRef >> will be flattened as an array reference.
+For example, C<< {foo => 0, bar => 1} >>
+will be converted into C<< [qw(bar 1 foo 0)] >>.
 
-A subtype of C<ArrayRef>.
-If you turned C<coerce> on,
-lexically sorted keys of C<HashRef> will be a flatten array reference.
-For example, C<{foo => 0, bar => 1}>
-will be converted into C<[qw(foo bar)]>.
+B<NOTE>: Order of values/values is the same as lexically sorted keys.
 
-=item C<HashValuesToArrayRef>
+=item C<< HashKeysToArrayRef >>
 
-A subtype of C<ArrayRef>.
-If you turned C<coerce> on,
-values of C<HashRef> will be a flatten array reference.
-For example, C<{foo => 1, bar => 0}>
-will be converted into C<[qw(0 1)]>.
+A subtype of C<< ArrayRef >>.
+If you turned C<< coerce >> on,
+list of lexically sorted keys of C<< HashRef >> will be an array reference.
+For example, C<< {foo => 0, bar => 1} >>
+will be converted into C<< [qw(bar foo)] >>.
+
+=item C<< HashValuesToArrayRef >>
+
+A subtype of C<< ArrayRef >>.
+If you turned C<< coerce >> on,
+list of values of C<< HashRef >> will be an array reference.
+For example, C<< {foo => 0, bar => 1} >>
+will be converted into C<< [qw(1 0)] >>.
 
 B<NOTE>: Order of values is the same as lexically sorted keys.
 
-=item C<OddArrayRef>
+=item C<< OddArrayRef >>
 
-A subtype of C<ArrayRef>, that must have odd elements.
-If you turned C<coerce> on, C<ArrayRef>, that has even elements,
-was pushed C<undef> as the last element.
-For example, C<[qw(foo bar)]> will be converted into C<[qw(foo bar), undef]>.
+A subtype of C<< ArrayRef >>, that must have odd elements.
+If you turned C<< coerce >> on, C<< ArrayRef >>, that has even elements,
+was pushed C<< undef >> as the last element.
+For example, C<< [qw(foo bar)] >>
+will be converted into C<< [qw(foo bar), undef] >>.
 
-=item C<EvenArrayRef>
+=item C<< EvenArrayRef >>
 
-A subtype of C<ArrayRef>, that must have even elements.
-If you turned C<coerce> on, C<ArrayRef>, that has odd elements,
-was pushed C<undef> as the last element.
-For example, C<[qw(foo)]> will be converted into C<[qw(foo), undef]>.
+A subtype of C<< ArrayRef >>, that must have even elements.
+If you turned C<< coerce >> on, C<< ArrayRef >>, that has odd elements,
+was pushed C<< undef >> as the last element.
+For example, C<< [qw(foo)] >>
+will be converted into C<< [qw(foo), undef] >>.
 
 =back
 
-=head2 To C<HashRef>
+=head2 To C<< HashRef >>
 
 =over 4
 
-=item C<ArrayRefToHashRef>
+=item C<< ArrayRefToHashRef >>
 
-A subtype of C<HashRef>.
-If you turned C<coerce> on,
-all elements of C<EvenArrayRef> was substituted for a hash reference.
-For example, C<[foo 0 bar 1]>
-will be converted into C<{foo => 0, bar => 1}>.
+A subtype of C<< HashRef >>.
+If you turned C<< coerce >> on,
+all elements of C<< EvenArrayRef >> was substituted for a hash reference.
+For example, C<< [foo 0 bar 1] >>
+will be converted into C<< {foo => 0, bar => 1} >>.
 
-=item C<ArrayRefToHashKeys>
+=item C<< ArrayRefToHashKeys >>
 
-A subtype of C<HashRef>.
-If you turned C<coerce> on,
-all elements of C<ArrayRef> was substituted for keys of a hash reference.
-For example, C<[foo bar baz]>
-will be converted into C<{foo => undef, bar => undef, baz => undef}>.
+A subtype of C<< HashRef >>.
+If you turned C<< coerce >> on,
+all elements of C<< ArrayRef >> was substituted for keys of a hash reference.
+For example, C<< [foo bar baz] >>
+will be converted into C<< {foo => undef, bar => undef, baz => undef} >>.
 
 =back
 
 =head1 SEE ALSO
 
 =over 4
+
+=item *
+
+L<Moose::Manual::Types|Moose::Manual::Types>
 
 =item *
 
@@ -484,21 +523,17 @@ L<MooseX::Types::Moose|MooseX::Types::Moose>
 
 L<MooseX::Types::Common|MooseX::Types::Common>
 
+=item *
+
+About special variable C<< $/ >> (C<< $RS >>, C<< $INPUT_RECORD_SEPARATOR >>).
+
+L<perlvar|perlvar>
+
 =back
 
 =head1 INCOMPATIBILITIES
 
 None reported.
-
-=head1 TO DO
-
-=over 4
-
-=item *
-
-More tests
-
-=back
 
 =head1 BUGS AND LIMITATIONS
 
@@ -507,7 +542,7 @@ No bugs have been reported.
 =head2 Making suggestions and reporting bugs
 
 Please report any found bugs, feature requests, and ideas for improvements
-to C<bug-moosex-types-moose-mutualcoercion at rt.cpan.org>,
+to C<< <bug-moosex-types-moose-mutualcoercion at rt.cpan.org> >>,
 or through the web interface
 at L<http://rt.cpan.org/Public/Bug/Report.html?Queue=MooseX-Types-Moose-MutualCoercion>.
 I will be notified, and then you'll automatically be notified of progress
@@ -522,7 +557,12 @@ And of course, suggestions and patches are welcome.
 
 You can find documentation for this module with the C<perldoc> command.
 
-    perldoc MooseX::Types::Moose::MutualCoercion
+    % perldoc MooseX::Types::Moose::MutualCoercion
+
+You can also find the Japanese edition of documentation for this module
+with the C<perldocjp> command from L<Pod::PerldocJp|Pod::PerldocJp>.
+
+    % perldocjp MooseX::Types::Moose::MutualCoercion::JA
 
 You can also look for information at:
 
@@ -548,9 +588,19 @@ L<http://cpanratings.perl.org/dist/MooseX-Types-Moose-MutualCoercion>
 
 =head1 VERSION CONTROL
 
-This module is maintained using I<git>.
+This module is maintained using I<Git>.
 You can get the latest version from
 L<git://github.com/gardejo/p5-moosex-types-moose-mutualcoercion.git>.
+
+=head1 TO DO
+
+=over 4
+
+=item *
+
+More tests
+
+=back
 
 =head1 AUTHOR
 
