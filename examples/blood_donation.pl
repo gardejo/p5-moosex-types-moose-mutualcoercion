@@ -4,13 +4,12 @@ use strict;
 use warnings;
 
 use FindBin;
-
 use lib "$FindBin::Bin/../lib";
 
 {
     package App::BloodDonation::Donor;
 
-    use Moose 0.89_01;
+    use Moose 0.89_01; # for native traits
     use MooseX::Types::Moose::MutualCoercion qw(StrToArrayRef NumToInt);
 
     use namespace::clean -except => [qw(meta)];
@@ -42,7 +41,7 @@ use lib "$FindBin::Bin/../lib";
 {
     package App::BloodDonation::Examination;
 
-    use Moose 0.89_01;
+    use Moose 0.89_01; # for native traits
     use MooseX::Types::Moose::MutualCoercion qw(ArrayRefToHashKeys);
 
     use namespace::clean -except => [qw(meta)];
@@ -92,9 +91,7 @@ use lib "$FindBin::Bin/../lib";
     1;
 }
 
-{
-    package main;
-
+sub main {
     my $examination = App::BloodDonation::Examination->new(
         donor => App::BloodDonation::Donor->new(
             visited_countries  => 'gb',
@@ -120,7 +117,12 @@ use lib "$FindBin::Bin/../lib";
         $examination->donor->min_blood_pressure,
     )
         unless $examination->can_gather;
+
+    return;
 }
+
+main()
+    unless caller();
 
 __END__
 
