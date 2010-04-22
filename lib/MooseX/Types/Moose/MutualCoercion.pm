@@ -32,6 +32,7 @@ use MooseX::Types -declare => [qw(
     HashRefToArrayRef   HashKeysToArrayRef  HashValuesToArrayRef
     OddArrayRef         EvenArrayRef
     ArrayRefToHashRef   ArrayRefToHashKeys
+    ArrayRefToRegexpRef
 )];
 use MooseX::Types::Common::String qw(
     NonEmptySimpleStr
@@ -46,6 +47,7 @@ use MooseX::Types::Moose qw(
         ScalarRef
         ArrayRef
         HashRef
+        RegexpRef
 );
 
 
@@ -246,6 +248,32 @@ coerce ArrayRefToHashKeys,
             my %hash;
             @hash{@$_} = ();
             \%hash;
+        };
+
+# ================================================================
+# to RegexpRef
+# ================================================================
+
+subtype ArrayRefToRegexpRef,
+    as RegexpRef;
+
+coerce ArrayRefToRegexpRef,
+    from ArrayRef,
+        via {
+            eval {
+                require Regexp::Assemble;
+            };
+            if ($@) {
+                my $pattern_string = join '|', @$_;
+                qr{$pattern_string};
+            }
+            else {
+                my $regexp = Regexp::Assemble->new;
+                foreach my $pattern (@$_) {
+                    $regexp->add($pattern);
+                }
+                $regexp->re;
+            }
         };
 
 
@@ -497,6 +525,27 @@ all elements of C<< ArrayRef >> will be substituted
 for keys of a hash reference.
 For example, C<< [qw(foo bar baz)] >>
 will be converted into C<< {foo => undef, bar => undef, baz => undef} >>.
+
+=back
+
+=head2 To C<< RegexpRef >>
+
+=over 4
+
+=item C<< ArrayRefToRegexpRef >>
+
+A subtype of C<< RegexpRef >>.
+If you turned C<< coerce >> on, all elements of C<< ArrayRef >>
+will be joined with C<< | >> (the meta character for alternation)
+and will become a regular expression reference.
+For example, C<< [qw(foo bar baz)] >>
+will be converted into C<< qr{foo|bar|baz} >>.
+
+B<NOTE>: If L<Regexp::Assemble|Regexp::Assemble> can be loaded dynamically,
+namely at runtime, a regular expression reference
+will be built with this module.
+For example, C<< [qw(foo bar baz)] >>
+will be converted into C<< qr{(?:ba[rz]|foo)} >>.
 
 =back
 

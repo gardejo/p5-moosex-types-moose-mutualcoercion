@@ -191,6 +191,21 @@ C<< coerce >>を有効にした場合、C<< ArrayRef >>の全ての要素はハ�
 
 =back
 
+=head2 C<< RegexpRef >>へ
+
+=over 4
+
+=item C<< ArrayRefToRegexpRef >>
+
+C<< RegexpRef >>のサブタイプです。
+C<< coerce >>を有効にした場合、C<< ArrayRef >>の全ての要素はC<< | >>(代替を示すメタ文字)で結合され、正規表現リファレンスになります。
+例えば、C<< [qw(foo bar baz)] >>はC<< qr{foo|bar|baz} >>に変換されます。
+
+B<註>: L<Regexp::Assemble|Regexp::Assemble>を動的に(つまり実行時に)ロード出来る場合、正規表現リファレンスはそのモジュールを用いて構築されます。
+例えば、C<< [qw(foo bar baz)] >>はC<< qr{(?:ba[rz]|foo)} >>に変換されます。
+
+=back
+
 =head1 関連情報
 
 =over 4

@@ -16,6 +16,7 @@ BEGIN {
         HashRefToArrayRef   HashKeysToArrayRef  HashValuesToArrayRef
         OddArrayRef         EvenArrayRef
         ArrayRefToHashRef   ArrayRefToHashKeys
+        ArrayRefToRegexpRef
     );
 }
 
@@ -44,6 +45,7 @@ BEGIN {
     has evenarrayref         => ( @cliche, EvenArrayRef         );
     has arrayreftohashref    => ( @cliche, ArrayRefToHashRef    );
     has arrayreftohashkeys   => ( @cliche, ArrayRefToHashKeys   );
+    has arrayreftoregexpref  => ( @cliche, ArrayRefToRegexpRef  );
 
     __PACKAGE__->meta->make_immutable;
     1;
@@ -164,6 +166,24 @@ BEGIN {
         { m => undef, n => undef, o => undef, },
         'coercion of ArrayRefToHashKeys'
     );
+
+    eval {
+        require Regexp::Assemble;
+    };
+    if ($@) {
+        is_deeply(
+            $foo->arrayreftoregexpref([qw(foo bar baz)]),
+            qr{foo|bar|baz},
+            'coercion of ArrayRefToRegexpRef',
+        );
+    }
+    else {
+        is_deeply(
+            $foo->arrayreftoregexpref([qw(foo bar baz)]),
+            qr{(?:ba[rz]|foo)},
+            'coercion of ArrayRefToRegexpRef via Regexp::Assemble',
+        );
+    }
 }
 
 __END__

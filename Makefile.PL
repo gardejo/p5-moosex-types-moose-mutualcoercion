@@ -67,6 +67,12 @@ requires(
 # optional dependency(-ies)
 # ================================================================
 features(
+    'Using Regexp::Assemble for performance optimization' => [
+        -default => 0,
+        recommends(
+            'Regexp::Assemble'                  => '0',
+        ),
+    ],
 );
 
 # ================================================================
