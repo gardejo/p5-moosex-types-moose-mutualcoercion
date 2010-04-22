@@ -20,13 +20,6 @@ use warnings;
 
 
 # ****************************************************************
-# general dependency(-ies)
-# ****************************************************************
-
-# use Carp qw(confess);
-
-
-# ****************************************************************
 # MOP dependency(-ies)
 # ****************************************************************
 
@@ -229,7 +222,6 @@ foreach my $type (OddArrayRef, EvenArrayRef) {
             };
 }
 
-
 # ================================================================
 # to HashRef
 # ================================================================
@@ -244,9 +236,7 @@ foreach my $type (
 coerce ArrayRefToHashRef,
     from EvenArrayRef,
         via {
-            # confess 'Odd number of elements in hash assignment'
-            #     if @$_ % 2;
-            my %hash = @$_;     # Note: "{ @$_ }" does not run (need "return")
+            my %hash = @$_; # Note: "{ @$_ }" is invalid (need "return").
             \%hash;
         };
 
@@ -266,7 +256,7 @@ coerce ArrayRefToHashKeys,
 sub _ensure_class_loaded {
     my $class = shift;
 
-    # Fixme: I cannot load role by Class::MOP::load_class($class).
+    # FIXME: I cannot load role by Class::MOP::load_class($class).
     #        Perhaps role must be consumed by some class?
     Class::MOP::load_class($class)
         unless Class::MOP::is_class_loaded($class);
@@ -299,7 +289,35 @@ This document describes
 L<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>
 version C<0.00>.
 
-=head2 Translations
+=head1 SYNOPSIS
+
+    {
+        package Foo;
+        use Moose;
+        use MooseX::Types::Moose::MutualCoercion qw(
+            StrToArrayRef ArrayRefToHashKeys
+        );
+        has 'thingies'
+            => ( is => 'rw', isa => StrToArrayRef, coerce => 1 );
+        has 'lookup_table'
+            => ( is => 'rw', isa => ArrayRefToHashKeys, coerce => 1 );
+        1;
+    }
+
+    my $foo = Foo->new( thingies => 'bar' );
+    print $foo->thingies->[0];                  # 'bar'
+
+    $foo->lookup_table([qw(baz qux)]);
+    print 'eureka!'                             # 'eureka!'
+        if grep {
+            exists $foo->lookup_table->{$_};
+        } qw(foo bar baz);
+
+=head1 TRANSLATIONS
+
+Much of the
+L<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>
+documentation has been translated into other language(s).
 
 =over 4
 
@@ -314,36 +332,12 @@ L<MooseX::Types::Moose::MutualCoercion::JA|MooseX::Types::Moose::MutualCoercion:
 
 =back
 
-=head1 SYNOPSIS
-
-    {
-        package Foo;
-        use Moose;
-        use MooseX::Types::Moose::MutualCoercion qw(
-            StrToArrayRef ArrayRefToHashKeys
-        );
-        has 'tags'
-            => ( is => 'rw', isa => StrToArrayRef, coerce => 1 );
-        has 'lookup_table'
-            => ( is => 'rw', isa => ArrayRefToHashKeys, coerce => 1 );
-        1;
-    }
-
-    my $foo = Foo->new( tags => 'bar' );
-    print $foo->tags->[0];                      # 'bar'
-
-    $foo->lookup_table([qw(baz qux)]);
-    print 'eureka!'                             # 'eureka!'
-        if grep {
-            exists $foo->lookup_table->{$_};
-        } qw(foo bar baz);
-
 =head1 DESCRIPTION
 
 This module packages several
 L<Moose::Util::TypeConstraints|Moose::Util::TypeConstraints> with coercions,
-designed to mutually coerce with the built-in or common types
-known to L<Moose|Moose>.
+designed to mutually coerce with the built-in and common types known to
+L<Moose|Moose>.
 
 =head1 CONSTRAINTS AND COERCIONS
 
@@ -359,7 +353,7 @@ but you can request them in an import list like this:
 =item C<< NumToInt >>
 
 A subtype of C<< Int >>.
-If you turned C<< coerce >> on, C<< Num >> will be integer.
+If you turned C<< coerce >> on, C<< Num >> will become integer.
 For example, C<< 3.14 >> will be converted into C<< 3 >>.
 
 =back
@@ -372,7 +366,7 @@ For example, C<< 3.14 >> will be converted into C<< 3 >>.
 
 A subtype of C<< Str >>.
 If you turned C<< coerce >> on,
-C<< ScalarRef[Str] >> will be dereferenced string.
+C<< ScalarRef[Str] >> will become dereferenced string.
 For example, C<< \do{'foo'} >> will be converted into C<< foo >>.
 
 =item C<< ArrayRefToLines >>
@@ -396,7 +390,9 @@ B<NOTE>: Also adds C<< $/ >> to the last element.
 A subtype of C<< ClassName >>.
 If you turned C<< coerce >> on, C<< NonEmptySimpleStr >>, provided by
 L<MooseX::Types::Common::String|MooseX::Types::Common::String>,
-will be ensure loaded by L<< Class::MOP::load_class()|Class::MOP >>.
+will be treated as a class name.
+When it is not already loaded, it will be loaded by
+L<< Class::MOP::load_class()|Class::MOP >>.
 
 B<CAVEAT>: This module does not provide C<< StrToRoleName >> currentry.
 
@@ -422,7 +418,7 @@ For example, C<< foo >> will be converted into C<< \do{'foo'} >>.
 
 A subtype of C<< ArrayRef >>.
 If you turned C<< coerce >> on,
-C<< Str >> will be assined for the first element of an array reference.
+C<< Str >> will be assigned for the first element of an array reference.
 For example, C<< foo >> will be converted into C<< [qw(foo)] >>.
 
 =item C<< LinesToArrayRef >>
@@ -443,13 +439,13 @@ C<< HashRef >> will be flattened as an array reference.
 For example, C<< {foo => 0, bar => 1} >>
 will be converted into C<< [qw(bar 1 foo 0)] >>.
 
-B<NOTE>: Order of values/values is the same as lexically sorted keys.
+B<NOTE>: Order of keys/values is the same as lexically sorted keys.
 
 =item C<< HashKeysToArrayRef >>
 
 A subtype of C<< ArrayRef >>.
 If you turned C<< coerce >> on,
-list of lexically sorted keys of C<< HashRef >> will be an array reference.
+list of lexically sorted keys of C<< HashRef >> will become an array reference.
 For example, C<< {foo => 0, bar => 1} >>
 will be converted into C<< [qw(bar foo)] >>.
 
@@ -457,7 +453,7 @@ will be converted into C<< [qw(bar foo)] >>.
 
 A subtype of C<< ArrayRef >>.
 If you turned C<< coerce >> on,
-list of values of C<< HashRef >> will be an array reference.
+list of values of C<< HashRef >> will become an array reference.
 For example, C<< {foo => 0, bar => 1} >>
 will be converted into C<< [qw(1 0)] >>.
 
@@ -467,7 +463,7 @@ B<NOTE>: Order of values is the same as lexically sorted keys.
 
 A subtype of C<< ArrayRef >>, that must have odd elements.
 If you turned C<< coerce >> on, C<< ArrayRef >>, that has even elements,
-was pushed C<< undef >> as the last element.
+will be pushed C<< undef >> as the last element.
 For example, C<< [qw(foo bar)] >>
 will be converted into C<< [qw(foo bar), undef] >>.
 
@@ -475,7 +471,7 @@ will be converted into C<< [qw(foo bar), undef] >>.
 
 A subtype of C<< ArrayRef >>, that must have even elements.
 If you turned C<< coerce >> on, C<< ArrayRef >>, that has odd elements,
-was pushed C<< undef >> as the last element.
+will be pushed C<< undef >> as the last element.
 For example, C<< [qw(foo)] >>
 will be converted into C<< [qw(foo), undef] >>.
 
@@ -489,16 +485,17 @@ will be converted into C<< [qw(foo), undef] >>.
 
 A subtype of C<< HashRef >>.
 If you turned C<< coerce >> on,
-all elements of C<< EvenArrayRef >> was substituted for a hash reference.
-For example, C<< [foo 0 bar 1] >>
+all elements of C<< EvenArrayRef >> will be substituted for a hash reference.
+For example, C<< [qw(foo 0 bar 1)] >>
 will be converted into C<< {foo => 0, bar => 1} >>.
 
 =item C<< ArrayRefToHashKeys >>
 
 A subtype of C<< HashRef >>.
 If you turned C<< coerce >> on,
-all elements of C<< ArrayRef >> was substituted for keys of a hash reference.
-For example, C<< [foo bar baz] >>
+all elements of C<< ArrayRef >> will be substituted
+for keys of a hash reference.
+For example, C<< [qw(foo bar baz)] >>
 will be converted into C<< {foo => undef, bar => undef, baz => undef} >>.
 
 =back

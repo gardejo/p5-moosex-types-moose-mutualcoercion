@@ -2,13 +2,39 @@
 
 =head1 NAME / 名称
 
-MooseX::Types::Moose::MutualCoercion::JA - Mooseの一般的な型制約のための相互型変換
+MooseX::Types::Moose::MutualCoercion::JA - (ja) Mooseの一般的な型制約のための相互型変換
 
 =head1 バージョン
 
 この文書はL<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>のバージョンC<0.00>について記述しています。
 
-=head2 翻訳
+=head1 概要
+
+    {
+        package Foo;
+        use Moose;
+        use MooseX::Types::Moose::MutualCoercion qw(
+            StrToArrayRef ArrayRefToHashKeys
+        );
+        has 'thingies'
+            => ( is => 'rw', isa => StrToArrayRef, coerce => 1 );
+        has 'lookup_table'
+            => ( is => 'rw', isa => ArrayRefToHashKeys, coerce => 1 );
+        1;
+    }
+
+    my $foo = Foo->new( thingies => 'bar' );
+    print $foo->thingies->[0];                  # 'bar'
+
+    $foo->lookup_table([qw(baz qux)]);
+    print 'eureka!'                             # 'eureka!'
+        if grep {
+            exists $foo->lookup_table->{$_};
+        } qw(foo bar baz);
+
+=head1 翻訳
+
+L<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>の文書の大部分は他の言語に翻訳されています。
 
 =over 4
 
@@ -23,34 +49,10 @@ L<MooseX::Types::Moose::MutualCoercion::JA|MooseX::Types::Moose::MutualCoercion:
 
 =back
 
-=head1 概要
-
-    {
-        package Foo;
-        use Moose;
-        use MooseX::Types::Moose::MutualCoercion qw(
-            StrToArrayRef ArrayRefToHashKeys
-        );
-        has 'tags'
-            => ( is => 'rw', isa => StrToArrayRef, coerce => 1 );
-        has 'lookup_table'
-            => ( is => 'rw', isa => ArrayRefToHashKeys, coerce => 1 );
-        1;
-    }
-
-    my $foo = Foo->new( tags => 'bar' );
-    print $foo->tags->[0];                      # 'bar'
-
-    $foo->lookup_table([qw(baz qux)]);
-    print 'eureka!'                             # 'eureka!'
-        if grep {
-            exists $foo->lookup_table->{$_};
-        } qw(foo bar baz);
-
 =head1 解説
 
 このモジュールは型変換付きのいくつかのL<Moose::Util::TypeConstraints|Moose::Util::TypeConstraints>型制約をまとめたものです。
-L<Moose|Moose>でよく知られている組み込みまたは一般的な型を相互に型変換するために設計されています。
+L<Moose|Moose>でよく知られている組み込みおよび一般的な型を相互に型変換するために設計されています。
 
 =head1 型制約と型変換
 
@@ -98,7 +100,8 @@ B<註>: 最後の要素にもC<< $/ >>が付加されます。
 =item C<< StrToClassName >>
 
 C<< ClassName >>のサブタイプです。
-C<< coerce >>を有効にした場合、L<MooseX::Types::Common::String|MooseX::Types::Common::String>由来のC<< NonEmptySimpleStr >>はL<< Class::MOP::load_class()|Class::MOP >>によってロードされることが保証されます。
+C<< coerce >>を有効にした場合、L<MooseX::Types::Common::String|MooseX::Types::Common::String>由来のC<< NonEmptySimpleStr >>はクラス名として扱われます。
+それがまだロードされていなければ、L<< Class::MOP::load_class()|Class::MOP >>によってロードされます。
 
 B<警告>: このモジュールは現時点ではC<< StrToRoleName >>を提供していません。
 
@@ -178,13 +181,13 @@ C<< coerce >>を有効にした場合、奇数個の要素を持つC<< ArrayRef 
 
 C<< HashRef >>のサブタイプです。
 C<< coerce >>を有効にした場合、C<< EvenArrayRef >>の全ての要素はハッシュリファレンスに代入されます。
-例えば、C<< [foo 0 bar 1] >>はC<< {foo => 0, bar => 1} >>に変換されます。
+例えば、C<< [qw(foo 0 bar 1)] >>はC<< {foo => 0, bar => 1} >>に変換されます。
 
 =item C<< ArrayRefToHashKeys >>
 
 C<< HashRef >>のサブタイプです。
 C<< coerce >>を有効にした場合、C<< ArrayRef >>の全ての要素はハッシュリファレンスのキーに代入されます。
-例えば、C<< [foo bar baz] >>はC<< {foo => undef, bar => undef, baz => undef} >>に変換されます。
+例えば、C<< [qw(foo bar baz)] >>はC<< {foo => undef, bar => undef, baz => undef} >>に変換されます。
 
 =back
 
