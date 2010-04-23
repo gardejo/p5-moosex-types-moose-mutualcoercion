@@ -6,7 +6,7 @@ MooseX::Types::Moose::MutualCoercion::JA - (ja) Mooseの一般的な型制約の
 
 =head1 バージョン
 
-この文書はL<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>のバージョンC<0.00>について記述しています。
+この文書はL<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>のバージョンC<0.01>について記述しています。
 
 =head1 概要
 

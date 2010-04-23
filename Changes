@@ -5,6 +5,14 @@ This file documents the revision history for Perl distribution
 VERSION HISTORY
 ===============
 
+0.01 : Released on 2010-04-23 (JST)
+-----------------------------------
+
+(No code changes)
+
+- Corrected testing for `use_ok`.
+
+
 0.00 : Released on 2010-04-23 (JST)
 -----------------------------------
 
