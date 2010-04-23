@@ -59,10 +59,9 @@ BEGIN {
         @unimplemented_type_names = qw(StrToRoleName);
         plan tests => scalar @TYPE_NAMES
                     + scalar @unimplemented_type_names
-                    + 2; # "use ok", "ensure class loaded"
+                    + 2; # "use_ok", "ensure class loaded"
+        use_ok 'MooseX::Types::Moose::MutualCoercion';
     }
-
-    use ok 'MooseX::Types::Moose::MutualCoercion';
 
     my $foo = Foo->new;
 
@@ -174,7 +173,7 @@ BEGIN {
         is_deeply(
             $foo->arrayreftoregexpref([qw(foo bar baz)]),
             qr{foo|bar|baz},
-            'coercion of ArrayRefToRegexpRef',
+            'coercion of ArrayRefToRegexpRef via homebrew regexp',
         );
     }
     else {
