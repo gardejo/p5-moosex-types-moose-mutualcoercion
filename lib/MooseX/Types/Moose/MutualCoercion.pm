@@ -35,7 +35,7 @@ use MooseX::Types -declare => [qw(
     ArrayRefToRegexpRef
 )];
 use MooseX::Types::Common::String qw(
-    NonEmptySimpleStr
+    NonEmptyStr
 );
 use MooseX::Types::Moose qw(
     Str
@@ -117,7 +117,7 @@ subtype StrToClassName,
     #     };
 
 coerce StrToClassName,
-    from NonEmptySimpleStr,
+    from NonEmptyStr,
         via {
             _ensure_class_loaded($_);
         };
@@ -132,7 +132,7 @@ coerce StrToClassName,
 #     as RoleName;
 # 
 # coerce StrToRoleName,
-#     from NonEmptySimpleStr,
+#     from NonEmptyStr,
 #         via {
 #             _ensure_class_loaded($_);
 #         };
@@ -420,7 +420,7 @@ B<NOTE>: Also adds C<< $/ >> to the last element.
 =item C<< StrToClassName >>
 
 A subtype of C<< ClassName >>.
-If you turned C<< coerce >> on, C<< NonEmptySimpleStr >>, provided by
+If you turned C<< coerce >> on, C<< NonEmptyStr >>, provided by
 L<MooseX::Types::Common::String|MooseX::Types::Common::String>,
 will be treated as a class name.
 When it is not already loaded, it will be loaded by

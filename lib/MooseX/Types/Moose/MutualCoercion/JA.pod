@@ -104,7 +104,7 @@ B<註>: 最後の要素にもC<< $/ >>が付加されます。
 =item C<< StrToClassName >>
 
 C<< ClassName >>のサブタイプです。
-C<< coerce >>を有効にした場合、L<MooseX::Types::Common::String|MooseX::Types::Common::String>由来のC<< NonEmptySimpleStr >>はクラス名として扱われます。
+C<< coerce >>を有効にした場合、L<MooseX::Types::Common::String|MooseX::Types::Common::String>由来のC<< NonEmptyStr >>はクラス名として扱われます。
 それがまだロードされていなければ、L<< Class::MOP::load_class()|Class::MOP >>によってロードされます。
 
 B<警告>: このモジュールは現時点ではC<< StrToRoleName >>を提供していません。
