@@ -327,7 +327,7 @@ version C<0.02>.
         # use URI; # Don't repeat yourself!
         has 'thingies' =>
             (is => 'rw', isa => StrToArrayRef, coerce => 1);
-        has 'datetime_class' =>
+        has 'uri_class' =>
             (is => 'rw', isa => StrToClassName, coerce => 1, default => 'URI');
         has 'lookup_table' =>
             (is => 'rw', isa => ArrayRefToHashKeys, coerce => 1);
@@ -335,12 +335,12 @@ version C<0.02>.
     }
 
     my $foo = Foo->new( thingies => 'bar' );
-    print $foo->thingies->[0];                                  # 'bar'
+    print $foo->thingies->[0];                              # 'bar'
 
-    print Class::MOP::is_class_loaded( $foo->datetime_class );  # 1
+    print Class::MOP::is_class_loaded( $foo->uri_class );   # 1
 
     $foo->lookup_table( [qw(baz qux)] );
-    print 'eureka!'                                             # 'eureka!'
+    print 'eureka!'                                         # 'eureka!'
         if grep {
             exists $foo->lookup_table->{$_};
         } qw(foo bar baz);
