@@ -396,8 +396,8 @@ B<NOTE>: Also adds C<< $/ >> to the last element.
 =item C<< StrToClassName >>
 
 B<CAVEAT>: This type constraint and coercion is B<DEPRECATED>.
-Please use L<MooseX::Types::LoadableClass's LodableType|
-MooseX::Types::LoadableClass/LoadableType> instead of it.
+Please use L<MooseX::Types::LoadableClass's LodableClass
+|MooseX::Types::LoadableClass/LodableClass> instead of it.
 In addition, L<MooseX::Types::LoadableClass|MooseX::Types::LoadableClass>
 also has L<LodableRole|MooseX::Types::LoadableClass/LoadableRole>.
 

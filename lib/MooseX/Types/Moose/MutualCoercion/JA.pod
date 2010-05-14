@@ -100,8 +100,8 @@ B<註>: 最後の要素にもC<< $/ >>が付加されます。
 =item C<< StrToClassName >>
 
 B<警告>: この型制約・型変換は非推奨です。
-これの代わりに、L<MooseX::Types::LoadableClassのLodableType|
-MooseX::Types::LoadableClass/LoadableType>を使ってください。
+これの代わりに、L<MooseX::Types::LoadableClassのLodableClass
+|MooseX::Types::LoadableClass/LoadableClass>を使ってください。
 さらに、L<MooseX::Types::LoadableClass|MooseX::Types::LoadableClass>
 にはL<LodableRole|MooseX::Types::LoadableClass/LoadableRole>も備わっています。
 
