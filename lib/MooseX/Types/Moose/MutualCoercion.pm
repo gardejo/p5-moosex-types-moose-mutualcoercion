@@ -55,7 +55,7 @@ use MooseX::Types::Moose qw(
 # public class variable(s)
 # ****************************************************************
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 
 # ****************************************************************
@@ -296,7 +296,7 @@ MooseX::Types::Moose::MutualCoercion - Mutual coercions for common type constrai
 
 This document describes
 L<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>
-version C<0.02>.
+version C<0.03>.
 
 =head1 SYNOPSIS
 
