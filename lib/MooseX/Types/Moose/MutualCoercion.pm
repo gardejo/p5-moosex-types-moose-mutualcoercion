@@ -111,31 +111,12 @@ coerce ArrayRefToLines,
 
 subtype StrToClassName,
     as ClassName;
-    # as ClassName,
-    #     where {
-    #         ! $_->meta->isa('Moose::Meta::Role');
-    #     };
 
 coerce StrToClassName,
     from NonEmptyStr,
         via {
             _ensure_class_loaded($_);
         };
-
-# ================================================================
-# to RoleName
-# ================================================================
-
-# Fixme: Class::MOP::class_of($_)->isa('Moose::Meta::Role') is true,
-#        but Class::MOP::is_loaded($_) is false (I expected it is true).
-# subtype StrToRoleName,
-#     as RoleName;
-# 
-# coerce StrToRoleName,
-#     from NonEmptyStr,
-#         via {
-#             _ensure_class_loaded($_);
-#         };
 
 # ================================================================
 # to ScalarRef
@@ -323,12 +304,9 @@ version C<0.02>.
         package Foo;
         use Moose;
         use MooseX::Types::Moose::MutualCoercion
-            qw(StrToArrayRef StrToClassName ArrayRefToHashKeys);
-        # use URI; # Don't repeat yourself!
+            qw(StrToArrayRef ArrayRefToHashKeys);
         has 'thingies' =>
             (is => 'rw', isa => StrToArrayRef, coerce => 1);
-        has 'uri_class' =>
-            (is => 'rw', isa => StrToClassName, coerce => 1, default => 'URI');
         has 'lookup_table' =>
             (is => 'rw', isa => ArrayRefToHashKeys, coerce => 1);
         1;
@@ -336,8 +314,6 @@ version C<0.02>.
 
     my $foo = Foo->new( thingies => 'bar' );
     print $foo->thingies->[0];                              # 'bar'
-
-    print Class::MOP::is_class_loaded( $foo->uri_class );   # 1
 
     $foo->lookup_table( [qw(baz qux)] );
     print 'eureka!'                                         # 'eureka!'
@@ -419,14 +395,18 @@ B<NOTE>: Also adds C<< $/ >> to the last element.
 
 =item C<< StrToClassName >>
 
+B<CAVEAT>: This type constraint and coercion is B<DEPRECATED>.
+Please use L<MooseX::Types::LoadableClass's LodableType|
+MooseX::Types::LoadableClass/LoadableType> instead of it.
+In addition, L<MooseX::Types::LoadableClass|MooseX::Types::LoadableClass>
+also has L<LodableRole|MooseX::Types::LoadableClass/LoadableRole>.
+
 A subtype of C<< ClassName >>.
 If you turned C<< coerce >> on, C<< NonEmptyStr >>, provided by
 L<MooseX::Types::Common::String|MooseX::Types::Common::String>,
 will be treated as a class name.
 When it is not already loaded, it will be loaded by
 L<< Class::MOP::load_class()|Class::MOP >>.
-
-B<CAVEAT>: This module does not provide C<< StrToRoleName >> currentry.
 
 =back
 
@@ -568,6 +548,10 @@ L<MooseX::Types|MooseX::Types>
 =item *
 
 L<MooseX::Types::Moose|MooseX::Types::Moose>
+
+=item *
+
+L<MooseX::Types::LoadableClass|MooseX::Types::LoadableClass>
 
 =item *
 

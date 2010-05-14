@@ -14,12 +14,9 @@ MooseX::Types::Moose::MutualCoercion::JA - (ja) Mooseの一般的な型制約の
         package Foo;
         use Moose;
         use MooseX::Types::Moose::MutualCoercion
-            qw(StrToArrayRef StrToClassName ArrayRefToHashKeys);
-        # use URI; # Don't repeat yourself!
+            qw(StrToArrayRef ArrayRefToHashKeys);
         has 'thingies' =>
             (is => 'rw', isa => StrToArrayRef, coerce => 1);
-        has 'uri_class' =>
-            (is => 'rw', isa => StrToClassName, coerce => 1, default => 'URI');
         has 'lookup_table' =>
             (is => 'rw', isa => ArrayRefToHashKeys, coerce => 1);
         1;
@@ -28,13 +25,12 @@ MooseX::Types::Moose::MutualCoercion::JA - (ja) Mooseの一般的な型制約の
     my $foo = Foo->new( thingies => 'bar' );
     print $foo->thingies->[0];                              # 'bar'
 
-    print Class::MOP::is_class_loaded( $foo->uri_class );   # 1
-
     $foo->lookup_table( [qw(baz qux)] );
     print 'eureka!'                                         # 'eureka!'
         if grep {
             exists $foo->lookup_table->{$_};
         } qw(foo bar baz);
+
 
 =head1 翻訳
 
@@ -103,11 +99,15 @@ B<註>: 最後の要素にもC<< $/ >>が付加されます。
 
 =item C<< StrToClassName >>
 
+B<警告>: この型制約・型変換は非推奨です。
+これの代わりに、L<MooseX::Types::LoadableClassのLodableType|
+MooseX::Types::LoadableClass/LoadableType>を使ってください。
+さらに、L<MooseX::Types::LoadableClass|MooseX::Types::LoadableClass>
+にはL<LodableRole|MooseX::Types::LoadableClass/LoadableRole>も備わっています。
+
 C<< ClassName >>のサブタイプです。
 C<< coerce >>を有効にした場合、L<MooseX::Types::Common::String|MooseX::Types::Common::String>由来のC<< NonEmptyStr >>はクラス名として扱われます。
 それがまだロードされていなければ、L<< Class::MOP::load_class()|Class::MOP >>によってロードされます。
-
-B<警告>: このモジュールは現時点ではC<< StrToRoleName >>を提供していません。
 
 =back
 
@@ -225,6 +225,10 @@ L<MooseX::Types|MooseX::Types>
 =item *
 
 L<MooseX::Types::Moose|MooseX::Types::Moose>
+
+=item *
+
+L<MooseX::Types::LoadableClass|MooseX::Types::LoadableClass>
 
 =item *
 
