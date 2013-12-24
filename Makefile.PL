@@ -18,7 +18,7 @@ sub recursive_author_tests {
 # main routine
 # ****************************************************************
 
-use inc::Module::Install 0.95;
+use inc::Module::Install 1.06;
 
 # ================================================================
 # gathering meta information
@@ -76,15 +76,9 @@ features(
 );
 
 # ================================================================
-# build dependency(-ies)
+# configure dependency(-ies)
 # ================================================================
-build_requires(
-);
-
-# ================================================================
-# test dependency(-ies)
-# ================================================================
-test_requires(
+configure_requires(
 #   'Test::Class'                       => '0.34',
         # was not used this time
     'Test::Exception'                   => '0.27',
@@ -96,9 +90,9 @@ test_requires(
 );
 
 # ================================================================
-# install dependency(-ies)
+# test dependency(-ies) / build dependency(-ies)
 # ================================================================
-install_requires(
+build_requires(
 );
 
 # ================================================================
