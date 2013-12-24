@@ -34,7 +34,6 @@ BEGIN {
     has scalarreftostr       => ( @cliche, ScalarRefToStr       );
     has arrayreftolines      => ( @cliche, ArrayRefToLines      );
     has strtoclassname       => ( @cliche, StrToClassName       );
-    # has strtorolename        => ( @cliche, StrToRoleName        );
     has strtoscalarref       => ( @cliche, StrToScalarRef       );
     has strtoarrayref        => ( @cliche, StrToArrayRef        );
     has linestoarrayref      => ( @cliche, LinesToArrayRef      );
@@ -55,11 +54,8 @@ BEGIN {
     use Class::Load qw(is_class_loaded);
     use Test::More;
 
-    my @unimplemented_type_names;
     BEGIN {
-        @unimplemented_type_names = qw(StrToRoleName);
         plan tests => scalar @TYPE_NAMES
-                    + scalar @unimplemented_type_names
                     + 2; # "use_ok", "ensure class loaded"
         use_ok 'MooseX::Types::Moose::MutualCoercion';
     }
@@ -93,20 +89,6 @@ BEGIN {
         is_class_loaded('Test::SomeClass'),
         'ensure class loaded',
     );
-
-    SKIP: {
-        skip 'cannot load a role by Class::MOP::load_class',
-            scalar @unimplemented_type_names;
-        is(
-            $foo->strtorolename('Test::SomeRole'),
-            'Test::SomeRole',
-            'coercion of StrToRoleName'
-        );
-        # ok(
-        #     Class::MOP::is_class_loaded('Test::SomeRole'),
-        #     'ensure class loaded',
-        # );
-    };
 
     is_deeply(
         $foo->strtoscalarref('foo'),

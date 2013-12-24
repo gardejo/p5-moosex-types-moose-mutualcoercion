@@ -275,8 +275,6 @@ coerce ArrayRefToRegexpRef,
 sub _ensure_class_loaded {
     my $class = shift;
 
-    # FIXME: I cannot load role by Class::MOP::load_class($class).
-    #        Perhaps role must be consumed by some class?
     load_class($class)
         unless is_class_loaded($class);
 
