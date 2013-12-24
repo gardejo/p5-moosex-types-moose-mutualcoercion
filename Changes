@@ -5,6 +5,29 @@ This file documents the revision history for Perl distribution
 VERSION HISTORY
 ===============
 
+0.04 : Released on 2013-12-25 (JST)
+-----------------------------------
+
+### Bug fixes
+
+#### Following recent Moose
+
+-   Replaced `load_class()` and `is_class_loaded()` functions from
+    `Class::MOP` module as an internally-used class loader with namesake
+    functions from `Class::Load` module.
+    It intended to follow recent Moose (2.1200).
+    It is concerned with RT #90911 (by Upasana Shukla).
+    Thank you for your contributions.
+
+#### Packaging
+
+-   The package no longer includes test modules.
+    They caused a failure of the tests.
+    It is concerned with RT #89913 (by Poul Henning Sørensen), #91051
+    (by Slaven Rezić) and #91581 (by Caleb Cushing).
+    Thank you for your contributions.
+
+
 0.03 : Released on 2010-05-15 (JST)
 -----------------------------------
 

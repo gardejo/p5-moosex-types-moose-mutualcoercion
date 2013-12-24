@@ -6,7 +6,7 @@ MooseX::Types::Moose::MutualCoercion::JA - (ja) Mooseの一般的な型制約の
 
 =head1 バージョン
 
-この文書はL<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>のバージョンC<0.03>について記述しています。
+この文書はL<MooseX::Types::Moose::MutualCoercion|MooseX::Types::Moose::MutualCoercion>のバージョンC<0.04>について記述しています。
 
 =head1 概要
 
@@ -107,7 +107,7 @@ B<警告>: この型制約・型変換は非推奨です。
 
 C<< ClassName >>のサブタイプです。
 C<< coerce >>を有効にした場合、L<MooseX::Types::Common::String|MooseX::Types::Common::String>由来のC<< NonEmptyStr >>はクラス名として扱われます。
-それがまだロードされていなければ、L<< Class::MOP::load_class()|Class::MOP >>によってロードされます。
+それがまだロードされていなければ、L<< Class::Load::load_class()|Class::Load >>によってロードされます。
 
 =back
 
