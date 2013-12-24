@@ -52,6 +52,7 @@ BEGIN {
 }
 {
     # use Test::Exception;
+    use Class::Load qw(is_class_loaded);
     use Test::More;
 
     my @unimplemented_type_names;
@@ -89,7 +90,7 @@ BEGIN {
         'coercion of StrToClassName'
     );
     ok(
-        Class::MOP::is_class_loaded('Test::SomeClass'),
+        is_class_loaded('Test::SomeClass'),
         'ensure class loaded',
     );
 

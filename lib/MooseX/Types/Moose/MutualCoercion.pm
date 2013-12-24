@@ -52,6 +52,16 @@ use MooseX::Types::Moose qw(
 
 
 # ****************************************************************
+# general dependency(-ies)
+# ****************************************************************
+
+use Class::Load qw(
+    load_class
+    is_class_loaded
+);
+
+
+# ****************************************************************
 # public class variable(s)
 # ****************************************************************
 
@@ -267,8 +277,8 @@ sub _ensure_class_loaded {
 
     # FIXME: I cannot load role by Class::MOP::load_class($class).
     #        Perhaps role must be consumed by some class?
-    Class::MOP::load_class($class)
-        unless Class::MOP::is_class_loaded($class);
+    load_class($class)
+        unless is_class_loaded($class);
 
     return $class;
 }
@@ -406,7 +416,7 @@ If you turned C<< coerce >> on, C<< NonEmptyStr >>, provided by
 L<MooseX::Types::Common::String|MooseX::Types::Common::String>,
 will be treated as a class name.
 When it is not already loaded, it will be loaded by
-L<< Class::MOP::load_class()|Class::MOP >>.
+L<< Class::Load::load_class()|Class::Load >>.
 
 =back
 

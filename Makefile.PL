@@ -53,6 +53,7 @@ no_index directory => (
 # general dependency(-ies)
 # ================================================================
 requires(
+    'Class::Load'                       => '0',
 #   'Carp'                              => '0',
         # was included by perl 5
     'Moose'                             => '0.63',
